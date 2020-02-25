@@ -2,6 +2,8 @@ Config = {}
 
 Config.Copsneeded = 1
 
+Config.Item = "advlockpick"
+
 Config.Hackingtime = 15 -- in Seconds
 
 Config.Items = {

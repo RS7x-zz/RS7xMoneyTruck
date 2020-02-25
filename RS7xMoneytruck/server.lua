@@ -26,12 +26,13 @@ AddEventHandler('RS7x:Itemcheck', function(amount)
     local xPlayer = ESX.GetPlayerFromId(source)
     local isRobbing = true
 
-    local item = xPlayer.getInventoryItem("advlockpick")
+    local item = xPlayer.getInventoryItem(Config.Item)
     if isRobbing and item.count > 0 and amount > 0 then
         CountCops()
         if CopsConnected >= Config.Copsneeded then
             --xPlayer.removeInventoryItem("advlockpick", amount)
             TriggerClientEvent('RS7x:startHacking',source,true)
+            TriggerClientEvent('animation:hack', source)
             print('got item')
         else
             isRobbing = false

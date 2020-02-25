@@ -74,6 +74,24 @@ AddEventHandler('animation:rob', function()
     ClearPedTasksImmediately(Ped)
 end)
 
+RegisterNetEvent('animation:hack')
+AddEventHandler('animation:hack', function()
+    local Ped = GetPlayerPed(-1)
+    RequestAnimDict("anim@heists@humane_labs@emp@hack_door")
+    while not HasAnimDictLoaded("anim@heists@humane_labs@emp@hack_door") do
+        Citizen.Wait(0)
+    end
+
+    while Hacking == true do
+        if not IsEntityPlayingAnim(Ped, "anim@heists@humane_labs@emp@hack_door", "hack_loop", 3) then
+            ClearPedSecondaryTask(Ped)
+            TaskPlayAnim(Ped, "anim@heists@humane_labs@emp@hack_door", "hack_loop", 8.0, -8, -1, 16, 0, 0, 0, 0)
+        end
+        Citizen.Wait(1)
+    end
+    ClearPedTasksImmediately(Ped)
+end)
+
 RegisterNetEvent('RS7x:getReward')
 AddEventHandler('RS7x:getReward', function()
   local pos = GetEntityCoords(GetPlayerPed(-1))
@@ -101,7 +119,7 @@ Citizen.CreateThread(function()
     local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.001, 0, 70)
     local dstCheck = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, GetEntityCoords(vehicle), true)
     local text = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -4.25, 0.0)
-    
+
     if DoesEntityExist(vehicle) then
       if  GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing then
           if dstCheck < 5.0 then
@@ -196,6 +214,7 @@ RegisterNetEvent('RS7x:startHacking')
 AddEventHandler('RS7x:startHacking', function(cb)
   cb = true
   isRobbing = true
+  Hacking = true
     if isRobbing == true then
       print('started')
       TriggerEvent('mhacking:seqstart', 6, Config.Hackingtime, cb1)
@@ -216,7 +235,9 @@ end)
 function cb1(success, timeremaining)
   if success then
     TriggerEvent('RS7x:getReward')
+    Hacking = false
   else
     TriggerEvent('mhacking:hide')
+    Hacking = false
   end
 end
