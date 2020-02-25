@@ -12,4 +12,4 @@ Config.Items = {
     "ring",
 }
 
-Config.Timer = 10000 -- 10 Seconds in msec
+Config.Timer = 100000 -- 10 Seconds in msec

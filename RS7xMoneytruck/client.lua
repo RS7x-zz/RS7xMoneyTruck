@@ -121,7 +121,7 @@ Citizen.CreateThread(function()
     local text = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -4.25, 0.0)
 
     if DoesEntityExist(vehicle) then
-      if  GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing then
+      if GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing then
           if dstCheck < 5.0 then
             if IsControlJustReleased(0, 38) then
               TriggerServerEvent('RS7x:Itemcheck', 1)

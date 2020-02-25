@@ -65,8 +65,8 @@ AddEventHandler('RS7x:Payout', function()
     local timer = 0
     Robbing = true
     while Robbing == true do
-        timer = timer + 1000
-        Citizen.Wait(1000)
+        timer = timer + 2000
+        Citizen.Wait(2000)
         xPlayer.addInventoryItem(RandomItem(), RandomNumber())
         xPlayer.addMoney(math.random(300,2500))
         if timer == Config.Timer then
