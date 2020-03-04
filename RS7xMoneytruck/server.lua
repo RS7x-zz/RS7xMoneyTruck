@@ -18,7 +18,6 @@ function CountCops()
     SetTimeout(120 * 1000 , CountCops)
 end
 
---SetTimeout(120 * 1000 , CountCops)
 CountCops()
 
 RegisterNetEvent('RS7x:Itemcheck')
@@ -33,7 +32,6 @@ AddEventHandler('RS7x:Itemcheck', function(amount)
             --xPlayer.removeInventoryItem("advlockpick", amount)
             TriggerClientEvent('RS7x:startHacking',source,true)
             TriggerClientEvent('animation:hack', source)
-            print('got item')
         else
             isRobbing = false
             TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("Not Enough Police") })
@@ -41,7 +39,6 @@ AddEventHandler('RS7x:Itemcheck', function(amount)
     else
         isRobbing = false
         TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("You dont have the right tools for this") })
-        print('no item')
     end
 end)
 
@@ -65,11 +62,15 @@ AddEventHandler('RS7x:Payout', function()
     local timer = 0
     Robbing = true
     while Robbing == true do
-        timer = timer + 2000
-        Citizen.Wait(2000)
-        xPlayer.addInventoryItem(RandomItem(), RandomNumber())
-        xPlayer.addMoney(math.random(300,2500))
+        timer = timer + 5
+        Citizen.Wait(3500)
+        if math.random(1,100) <= 50 then
+            xPlayer.addMoney(math.random(300,2500))
+        else
+            xPlayer.addInventoryItem(RandomItem(), RandomNumber())
+        end
         if timer == Config.Timer then
+            Robbing = false
             break
         end
     end

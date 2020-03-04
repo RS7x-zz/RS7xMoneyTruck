@@ -5,8 +5,6 @@ local pos = GetEntityCoords(GetPlayerPed(-1),  true)
 local s1, s2 = GetStreetNameAtCoord( pos.x, pos.y, pos.z, Citizen.PointerValueInt(), Citizen.PointerValueInt() )
 local street1 = GetStreetNameFromHashKey(s1)
 local street2 = GetStreetNameFromHashKey(s2)
-local Plate = GetVehicleNumberPlateText(vehicle)
---local Robbed = {}
 
 
 Citizen.CreateThread(function()
@@ -16,6 +14,11 @@ Citizen.CreateThread(function()
 	end
 
 	ESX.PlayerData = ESX.GetPlayerData()
+end)
+
+RegisterNetEvent('esx:setJob')
+AddEventHandler('esx:setJob', function(job)
+    ESX.PlayerData.job = job
 end)
 
 function removeblip(Blip)
@@ -96,9 +99,6 @@ RegisterNetEvent('RS7x:getReward')
 AddEventHandler('RS7x:getReward', function()
   local pos = GetEntityCoords(GetPlayerPed(-1))
   local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.001, 0, 70)
-  local ped = GetHashKey("s_m_m_security_01")
-  local dstCheck = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, GetEntityCoords(vehicle), true)
-  local finished = false
 
     if vehicle == GetHashKey('stockade') or GetEntityModel(vehicle) then
       createped()
@@ -110,6 +110,15 @@ AddEventHandler('RS7x:getReward', function()
     SetVehicleDoorOpen(vehicle, 3, false, false)
 end)
 
+function hasRobbed(hasRobbed)
+  if hasRobbed == true then
+    Citizen.Wait(Config.Timeout * 1000)
+    hasRobbed = false
+  else
+    hasRobbed = false
+  end
+end
+
 Citizen.CreateThread(function()
   while true do
 
@@ -119,9 +128,9 @@ Citizen.CreateThread(function()
     local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.001, 0, 70)
     local dstCheck = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, GetEntityCoords(vehicle), true)
     local text = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -4.25, 0.0)
-
+ 
     if DoesEntityExist(vehicle) then
-      if GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing then
+      if  GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing and not Timeout then
           if dstCheck < 5.0 then
             if IsControlJustReleased(0, 38) then
               TriggerServerEvent('RS7x:Itemcheck', 1)
@@ -132,9 +141,9 @@ Citizen.CreateThread(function()
         DrawText3Ds(text.x, text.y, text.z, "~r~[E]~w~ To Rob")
         if IsControlJustReleased(0,38) then
           TriggerEvent('animation:rob')
-          exports['progressBars']:startUI(Config.Timer, "Grabbing Cash/Items")
+          exports['progressBars']:startUI(Config.Timer * 1000, "Grabbing Cash/Items")
           TriggerServerEvent('RS7x:Payout')
-          Wait(Config.Timer)
+          Wait(Config.Timer * 1000)
           finished = true
         end
         if finished == true then
@@ -143,6 +152,7 @@ Citizen.CreateThread(function()
           SetPedAsNoLongerNeeded(guard3)
           pedSpawned = false
           isRobbing = false
+          hasRobbed(true)
           RemoveBlip(Blip)
           --return
         end
@@ -226,7 +236,7 @@ AddEventHandler('RS7x:NotifyPolice', function(msg)
   if ESX.PlayerData.job.name == 'police' then
     TriggerEvent('RS7x:Blip', pos.x,pos.y,pos.z)
     TriggerEvent('chat:addMessage', {
-    template = '<div class="chat-message emergency">[Dispatch]:' .. msg .. ' </div>',
+    template = '<div class="chat-message emergency">[Dispatch]: ' .. msg .. ' </div>',
     args = { msg }
     });
   end
@@ -237,6 +247,7 @@ function cb1(success, timeremaining)
     TriggerEvent('RS7x:getReward')
     Hacking = false
   else
+    --TriggerEvent('RS7x:getReward')
     TriggerEvent('mhacking:hide')
     Hacking = false
   end
