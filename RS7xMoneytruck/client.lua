@@ -5,6 +5,8 @@ local pos = GetEntityCoords(GetPlayerPed(-1),  true)
 local s1, s2 = GetStreetNameAtCoord( pos.x, pos.y, pos.z, Citizen.PointerValueInt(), Citizen.PointerValueInt() )
 local street1 = GetStreetNameFromHashKey(s1)
 local street2 = GetStreetNameFromHashKey(s2)
+local isRobbing = false
+local hasRobbed = false
 
 
 Citizen.CreateThread(function()
@@ -22,26 +24,24 @@ AddEventHandler('esx:setJob', function(job)
 end)
 
 function removeblip(Blip)
-  RemoveBlip(Blip)
+  if DoesBlipExist(Blip) then
+    RemoveBlip(Blip)
+  end
 end
 
 RegisterNetEvent('RS7x:Blip')
 AddEventHandler('RS7x:Blip', function(x,y,z)
-    if ESX.PlayerData.job.name == 'police' then
-      local plyPos = GetEntityCoords(GetPlayerPed(-1),  true)
-      local transT = 250
-      Blip = AddBlipForCoord(x,y,z)
-        SetBlipSprite(Blip,  477)
-        SetBlipColour(Blip,  1)
-        SetBlipAlpha(Blip,  transT)
-        SetBlipDisplay(Blip, 4)
-        SetBlipScale(Blip, 1.2)
-        SetBlipFlashes(Blip, true)
-        SetBlipAsShortRange(Blip,  true)
-        BeginTextCommandSetBlipName('STRING')
-        AddTextComponentString('Robbery In Progress | Money Truck')
-        EndTextCommandSetBlipName(Blip)
-    end
+  Blip = AddBlipForCoord(x,y,z)
+    SetBlipSprite(Blip,  477)
+    SetBlipColour(Blip,  1)
+    SetBlipAlpha(Blip,  250)
+    SetBlipDisplay(Blip, 4)
+    SetBlipScale(Blip, 1.2)
+    SetBlipFlashes(Blip, true)
+    SetBlipAsShortRange(Blip,  true)
+    BeginTextCommandSetBlipName('STRING')
+    AddTextComponentString('Robbery In Progress | Money Truck')
+    EndTextCommandSetBlipName(Blip)
 end)
 
 function DrawText3Ds(x,y,z,text)
@@ -103,15 +103,16 @@ AddEventHandler('RS7x:getReward', function()
     if vehicle == GetHashKey('stockade') or GetEntityModel(vehicle) then
       createped()
       pedSpawned = true
-      TriggerServerEvent('RS7x:NotifyPolice', street1, street2)
+      TriggerServerEvent('RS7x:NotifyPolice', street1, street2, pos)
     end
     Citizen.Wait(0)
     SetVehicleDoorOpen(vehicle, 2, false, false)
     SetVehicleDoorOpen(vehicle, 3, false, false)
 end)
 
-function hasRobbed(hasRobbed)
+function Timeout(hasRobbed)
   if hasRobbed == true then
+    exports['mythic_notify']:DoHudText('error', 'You have grabbed the loot and the truck appears to be empty go lay low for a while' )
     Citizen.Wait(Config.Timeout * 1000)
     hasRobbed = false
   else
@@ -128,36 +129,39 @@ Citizen.CreateThread(function()
     local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.001, 0, 70)
     local dstCheck = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, GetEntityCoords(vehicle), true)
     local text = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -4.25, 0.0)
- 
+
     if DoesEntityExist(vehicle) then
-      if  GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing and not Timeout then
-          if dstCheck < 5.0 then
-            if IsControlJustReleased(0, 38) then
-              TriggerServerEvent('RS7x:Itemcheck', 1)
-            end
+      if GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing and not hasRobbed then
+        if dstCheck < 5.0 then
+          if IsControlJustReleased(0, 38) then
+            TriggerServerEvent('RS7x:Itemcheck', 1)
           end
-      end
-      if pedSpawned == true then
-        DrawText3Ds(text.x, text.y, text.z, "~r~[E]~w~ To Rob")
-        if IsControlJustReleased(0,38) then
-          TriggerEvent('animation:rob')
-          exports['progressBars']:startUI(Config.Timer * 1000, "Grabbing Cash/Items")
-          TriggerServerEvent('RS7x:Payout')
-          Wait(Config.Timer * 1000)
-          finished = true
-        end
-        if finished == true then
-          SetPedAsNoLongerNeeded(gaurd)
-          SetPedAsNoLongerNeeded(guard2)
-          SetPedAsNoLongerNeeded(guard3)
-          pedSpawned = false
-          isRobbing = false
-          hasRobbed(true)
-          RemoveBlip(Blip)
-          --return
         end
       end
-    end
+        if pedSpawned == true then
+            DrawMarker(27, text.x, text.y, text.z, 0, 0, 0, 0, 0, 0, 1.001, 1.0001, 0.5001, 255, 0, 0, 100, 0, 0, 0, 0)
+            DrawText3Ds(text.x, text.y, text.z, "~r~[E]~w~ To Rob")
+          if IsControlJustReleased(0,38) then
+            TriggerEvent('animation:rob')
+            exports['progressBars']:startUI(Config.Timer * 1000, "Grabbing Cash/Items")
+            TriggerServerEvent('RS7x:Payout')
+            Wait(Config.Timer * 1000)
+            finished = true
+          end
+          if finished == true then
+            SetPedAsNoLongerNeeded(gaurd)
+            SetPedAsNoLongerNeeded(guard2)
+            SetPedAsNoLongerNeeded(guard3)
+            pedSpawned = false
+            isRobbing = false
+            Timeout(true)
+            RemoveBlip(Blip)
+            --return
+          end
+        end
+      else
+        Citizen.Wait(500)
+      end
   end
 end)
 
@@ -233,13 +237,10 @@ end)
 
 RegisterNetEvent('RS7x:NotifyPolice')
 AddEventHandler('RS7x:NotifyPolice', function(msg)
-  if ESX.PlayerData.job.name == 'police' then
-    TriggerEvent('RS7x:Blip', pos.x,pos.y,pos.z)
     TriggerEvent('chat:addMessage', {
     template = '<div class="chat-message emergency">[Dispatch]: ' .. msg .. ' </div>',
     args = { msg }
     });
-  end
 end)
 
 function cb1(success, timeremaining)
@@ -247,8 +248,11 @@ function cb1(success, timeremaining)
     TriggerEvent('RS7x:getReward')
     Hacking = false
   else
-    --TriggerEvent('RS7x:getReward')
+    exports['mythic_notify']:DoHudText('error', 'You failed to hack you need to wait 30 seconds')
     TriggerEvent('mhacking:hide')
     Hacking = false
+    Citizen.Wait(30 * 1000) -- add a time penalty if failed, so it gives police more time to arrive // feel free to remove
+    isRobbing = false
+    exports['mythic_notify']:DoHudText('inform', 'you can now hit the truck again')
   end
 end

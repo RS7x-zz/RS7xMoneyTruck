@@ -43,8 +43,18 @@ AddEventHandler('RS7x:Itemcheck', function(amount)
 end)
 
 RegisterNetEvent('RS7x:NotifyPolice')
-AddEventHandler('RS7x:NotifyPolice', function(street1, street2)
-    TriggerClientEvent('RS7x:NotifyPolice', source, 'Robbery In Progress : Security Truck | ' .. street1 .. " | " .. street2 .. ' ')
+AddEventHandler('RS7x:NotifyPolice', function(street1, street2, pos)
+    local xPlayers = ESX.GetPlayers()
+    local isRobbing = true
+    if isRobbing == true then
+		for i=1, #xPlayers, 1 do
+			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+            if xPlayer.job.name == 'police' then
+                TriggerClientEvent('RS7x:Blip', source, pos.x, pos.y, pos.z)
+                TriggerClientEvent('RS7x:NotifyPolice', xPlayers[i], 'Robbery In Progress : Security Truck | ' .. street1 .. " | " .. street2 .. ' ')
+			end
+		end
+	end
 end)
 
 function RandomItem()
