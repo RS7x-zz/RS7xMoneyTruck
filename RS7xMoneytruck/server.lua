@@ -50,7 +50,7 @@ AddEventHandler('RS7x:NotifyPolice', function(street1, street2, pos)
 		for i=1, #xPlayers, 1 do
 			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
             if xPlayer.job.name == 'police' then
-                TriggerClientEvent('RS7x:Blip', source, pos.x, pos.y, pos.z)
+                TriggerClientEvent('RS7x:Blip', xPlayers[i], pos.x, pos.y, pos.z)
                 TriggerClientEvent('RS7x:NotifyPolice', xPlayers[i], 'Robbery In Progress : Security Truck | ' .. street1 .. " | " .. street2 .. ' ')
 			end
 		end
