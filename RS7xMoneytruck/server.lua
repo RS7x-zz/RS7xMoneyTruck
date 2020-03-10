@@ -26,10 +26,11 @@ AddEventHandler('RS7x:Itemcheck', function(amount)
     local isRobbing = true
 
     local item = xPlayer.getInventoryItem(Config.Item)
+
     if isRobbing and item.count > 0 and amount > 0 then
         CountCops()
         if CopsConnected >= Config.Copsneeded then
-            --xPlayer.removeInventoryItem("advlockpick", amount)
+            --xPlayer.removeInventoryItem("Config.Item", 1)  // uncomment if you want to remove the item on start //
             TriggerClientEvent('RS7x:startHacking',source,true)
             TriggerClientEvent('animation:hack', source)
         else
@@ -46,6 +47,7 @@ RegisterNetEvent('RS7x:NotifyPolice')
 AddEventHandler('RS7x:NotifyPolice', function(street1, street2, pos)
     local xPlayers = ESX.GetPlayers()
     local isRobbing = true
+
     if isRobbing == true then
 		for i=1, #xPlayers, 1 do
 			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
@@ -70,10 +72,12 @@ AddEventHandler('RS7x:Payout', function()
     local xPlayer = ESX.GetPlayerFromId(source)
     local Robbing = false
     local timer = 0
+
     Robbing = true
+
     while Robbing == true do
         timer = timer + 5
-        Citizen.Wait(3500)
+        Citizen.Wait(3500)  --// Delay between receiving Items/Cash might need to play around with this if you decide to change the default timer (Config.Timer)
         if math.random(1,100) <= 50 then
             xPlayer.addMoney(math.random(300,2500))
         else

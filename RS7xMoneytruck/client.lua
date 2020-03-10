@@ -168,7 +168,7 @@ end)
 function createped()
 
   local pos = GetEntityCoords(GetPlayerPed(-1))
-  local hashKey = GetHashKey("s_m_m_security_01")
+  local hashKey = GetHashKey("ig_casey")
   local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.001, 0, 70)
   local pedSpawned = false
   local pedType = 5
@@ -176,17 +176,19 @@ function createped()
   RequestModel(hashKey)
   while not HasModelLoaded(hashKey) do
       RequestModel(hashKey)
-      Citizen.Wait(100)
+      Citizen.Wait(500)
   end
 
   print('Spawning Peds?')
 
-  guard = CreatePedInsideVehicle(vehicle, pedType, hashKey, 2, 1, 1)
+  guard = CreatePedInsideVehicle(vehicle, pedType, hashKey, 0, 1, 1)
   guard2 = CreatePedInsideVehicle(vehicle, pedType, hashKey, 1, 1, 1)
-  guard3 =  CreatePedInsideVehicle(vehicle, pedType, hashKey, 0, 1, 1)
+  guard3 =  CreatePedInsideVehicle(vehicle, pedType, hashKey, 2, 1, 1)
+
 --////////////
 --  Guard 1
 --///////////
+
   SetPedShootRate(guard,  750)
   SetPedCombatAttributes(guard, 46, true)
   SetPedFleeAttributes(guard, 0, 0)
@@ -194,8 +196,9 @@ function createped()
   SetPedMaxHealth(guard, 900)
   SetPedAlertness(guard, 3)
   SetPedCombatRange(guard, 0)
+  SetPedCombatMovement(guard, 3)
   GiveWeaponToPed(guard, GetHashKey("WEAPON_SMG"), 5000, true, true)
-  SetPedRelationshipGroupHash( gaurd, GetHashKey("HATES_PLAYER"))
+  SetPedRelationshipGroupHash( guard, GetHashKey("HATES_PLAYER"))
 
   --////////////
   --  Guard 2
@@ -207,6 +210,7 @@ function createped()
   SetPedMaxHealth(guard2, 900)
   SetPedAlertness(guard2, 3)
   SetPedCombatRange(guard2, 0)
+  SetPedCombatMovement(guard2, 3)
   GiveWeaponToPed(guard2, GetHashKey("WEAPON_SMG"), 5000, true, true)
   SetPedRelationshipGroupHash( guard2, GetHashKey("HATES_PLAYER"))
 
@@ -220,8 +224,10 @@ function createped()
   SetPedMaxHealth(guard3, 900)
   SetPedAlertness(guard3, 3)
   SetPedCombatRange(guard3, 0)
+  SetPedCombatMovement(guard3, 3)
   GiveWeaponToPed(guard3, GetHashKey("WEAPON_SMG"), 5000, true, true)
   SetPedRelationshipGroupHash( guard3, GetHashKey("HATES_PLAYER"))
+
 end
 
 RegisterNetEvent('RS7x:startHacking')
@@ -237,10 +243,7 @@ end)
 
 RegisterNetEvent('RS7x:NotifyPolice')
 AddEventHandler('RS7x:NotifyPolice', function(msg)
-    TriggerEvent('chat:addMessage', {
-    template = '<div class="chat-message emergency">[Dispatch]: ' .. msg .. ' </div>',
-    args = { msg }
-    });
+    exports['mythic_notify']:DoHudText('error', msg )
 end)
 
 function cb1(success, timeremaining)
@@ -250,9 +253,10 @@ function cb1(success, timeremaining)
   else
     exports['mythic_notify']:DoHudText('error', 'You failed to hack you need to wait 30 seconds')
     TriggerEvent('mhacking:hide')
+    TriggerServerEvent('RS7x:NotifyPolice', street1, street2, pos)
     Hacking = false
-    Citizen.Wait(30 * 1000) -- add a time penalty if failed, so it gives police more time to arrive // feel free to remove
+    Wait(30 * 1000) -- add a time penalty if failed, so it gives police more time to arrive // feel free to remove
     isRobbing = false
-    exports['mythic_notify']:DoHudText('inform', 'you can now hit the truck again')
+    exports['mythic_notify']:DoHudText('error', 'you can now hit the truck again')
   end
 end

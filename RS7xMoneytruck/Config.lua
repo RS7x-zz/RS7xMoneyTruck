@@ -14,4 +14,4 @@ Config.Items = { -- Reward items
 
 Config.Timer = 100 -- how long you want to rob for (progressbar / payout time)
 
-Config.Timeout = 300 -- Timeout before robbing another truck (Seconds)
+Config.Timeout = 300 -- Timeout before robbing another truck (5 Min Seconds)
