@@ -4,7 +4,7 @@
 
 dependencies
 (mythic_notify) https://forum.cfx.re/t/dev-resource-mythic-notifications/587071      
-(progressBars) https://forum.cfx.re/t/release-progress-bars-1-0-standalone/526287/1
+(progressBars) https://forum.cfx.re/t/release-progress-bars-1-0-standalone/526287/1     
 (mhacking) https://forum.cfx.re/t/release-simple-hacking-minigame/62095/1
 
 # Installation 
