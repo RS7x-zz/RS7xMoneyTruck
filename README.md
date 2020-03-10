@@ -15,8 +15,5 @@
 
 # Contact
 
-To get in contact or want support on this resource join               
-discord.gg/mEAAJAE
-
-Or DM me on discrod                                           
+To get in contact or want support on this resource join                                                        
 RS7x#9905
