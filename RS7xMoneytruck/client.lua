@@ -23,6 +23,11 @@ AddEventHandler('esx:setJob', function(job)
     ESX.PlayerData.job = job
 end)
 
+RegisterNetEvent('esx:notification')
+AddEventHandler('esx:notification', function(msg, color)
+    ESX.ShowNotification(msg, false, false, color)
+end)
+
 function removeblip(Blip)
   if DoesBlipExist(Blip) then
     RemoveBlip(Blip)
@@ -112,7 +117,8 @@ end)
 
 function Timeout(hasRobbed)
   if hasRobbed == true then
-    exports['mythic_notify']:DoHudText('error', 'You have grabbed the loot and the truck appears to be empty go lay low for a while' )
+    --exports['mythic_notify']:DoHudText('error', 'You have grabbed the loot and the truck appears to be empty go lay low for a while' )
+    TriggerEvent('esx:notification','~g~You have grabbed the loot and the truck appears to be empty go lay low for a while~w~', g)
     Citizen.Wait(Config.Timeout * 1000)
     hasRobbed = false
   else
@@ -243,7 +249,7 @@ end)
 
 RegisterNetEvent('RS7x:NotifyPolice')
 AddEventHandler('RS7x:NotifyPolice', function(msg)
-    exports['mythic_notify']:DoHudText('error', msg )
+    TriggerEvent('esx:notification', msg, r)
 end)
 
 function cb1(success, timeremaining)
@@ -251,12 +257,14 @@ function cb1(success, timeremaining)
     TriggerEvent('RS7x:getReward')
     Hacking = false
   else
-    exports['mythic_notify']:DoHudText('error', 'You failed to hack you need to wait 30 seconds')
+    --exports['mythic_notify']:DoHudText('error', 'You failed to hack you need to wait 30 seconds')
+    TriggerEvent('esx:notification', '~r~You failed to hack you need to wait 30 seconds~w~', r)
     TriggerEvent('mhacking:hide')
     TriggerServerEvent('RS7x:NotifyPolice', street1, street2, pos)
     Hacking = false
     Wait(30 * 1000) -- add a time penalty if failed, so it gives police more time to arrive // feel free to remove
     isRobbing = false
-    exports['mythic_notify']:DoHudText('error', 'you can now hit the truck again')
+    --exports['mythic_notify']:DoHudText('error', 'you can now hit the truck again')
+    TriggerEvent('esx:notification', '~g~You can now hit the truck again~w~', g)
   end
 end
