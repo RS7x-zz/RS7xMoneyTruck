@@ -111,8 +111,6 @@ AddEventHandler('RS7x:getReward', function()
       TriggerServerEvent('RS7x:NotifyPolice', street1, street2, pos)
     end
     Citizen.Wait(0)
-    SetVehicleDoorOpen(vehicle, 2, false, false)
-    SetVehicleDoorOpen(vehicle, 3, false, false)
 end)
 
 function Timeout(hasRobbed)
@@ -203,6 +201,7 @@ function createped()
   SetPedAlertness(guard, 3)
   SetPedCombatRange(guard, 0)
   SetPedCombatMovement(guard, 3)
+  TaskCombatPed(guard, GetPlayerPed(-1), 0,16)
   GiveWeaponToPed(guard, GetHashKey("WEAPON_SMG"), 5000, true, true)
   SetPedRelationshipGroupHash( guard, GetHashKey("HATES_PLAYER"))
 
@@ -217,6 +216,7 @@ function createped()
   SetPedAlertness(guard2, 3)
   SetPedCombatRange(guard2, 0)
   SetPedCombatMovement(guard2, 3)
+  TaskCombatPed(guard2, GetPlayerPed(-1), 0,16)
   GiveWeaponToPed(guard2, GetHashKey("WEAPON_SMG"), 5000, true, true)
   SetPedRelationshipGroupHash( guard2, GetHashKey("HATES_PLAYER"))
 
@@ -231,9 +231,9 @@ function createped()
   SetPedAlertness(guard3, 3)
   SetPedCombatRange(guard3, 0)
   SetPedCombatMovement(guard3, 3)
+  TaskCombatPed(guard3, GetPlayerPed(-1), 0,16)
   GiveWeaponToPed(guard3, GetHashKey("WEAPON_SMG"), 5000, true, true)
   SetPedRelationshipGroupHash( guard3, GetHashKey("HATES_PLAYER"))
-
 end
 
 RegisterNetEvent('RS7x:startHacking')
