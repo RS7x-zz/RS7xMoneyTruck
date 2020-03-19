@@ -114,15 +114,17 @@ AddEventHandler('RS7x:getReward', function()
 end)
 
 function Timeout(hasRobbed)
-  if hasRobbed == true then
-    --exports['mythic_notify']:DoHudText('error', 'You have grabbed the loot and the truck appears to be empty go lay low for a while' )
-    TriggerEvent('esx:notification','~g~You have grabbed the loot and the truck appears to be empty go lay low for a while~w~', g)
-    Citizen.Wait(Config.Timeout * 1000)
-    hasRobbed = false
-  else
-    hasRobbed = false
-  end
+
+    if hasRobbed == true then
+        exports['mythic_notify']:DoHudText('error', 'You have grabbed the loot and the truck appears to be empty go lay low for a while' )
+        --TriggerEvent('esx:notification','~g~You have grabbed the loot and the truck appears to be empty go lay low for a while~w~', g)
+        Citizen.Wait(Config.Timeout * 1000)
+        hasRobbed = false
+    else
+        hasRobbed = false
+    end
 end
+
 
 Citizen.CreateThread(function()
   while true do
@@ -131,41 +133,58 @@ Citizen.CreateThread(function()
 
     local pos = GetEntityCoords(GetPlayerPed(-1))
     local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.001, 0, 70)
-    local dstCheck = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, GetEntityCoords(vehicle), true)
     local text = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -4.25, 0.0)
+    local dstCheck = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, GetEntityCoords(vehicle), true)
+    local engine = GetVehicleEngineHealth(vehicle)
 
     if DoesEntityExist(vehicle) then
-      if GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing and not hasRobbed then
-        if dstCheck < 5.0 then
-          if IsControlJustReleased(0, 38) then
-            TriggerServerEvent('RS7x:Itemcheck', 1)
-          end
+        if GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing and not hasRobbed then
+            if dstCheck < 5.0 then
+                if IsControlJustReleased(0, 38) then
+                    if engine ~= 0 then
+                        TriggerServerEvent('RS7x:Itemcheck', 1)
+                    else
+                        exports['mythic_notify']:DoHudText('error', 'Vehicle is disabled or already been hit')
+                    end
+                end
+            end
         end
-      end
-        if pedSpawned == true then
-            DrawMarker(27, text.x, text.y, text.z, 0, 0, 0, 0, 0, 0, 1.001, 1.0001, 0.5001, 255, 0, 0, 100, 0, 0, 0, 0)
-            DrawText3Ds(text.x, text.y, text.z, "~r~[E]~w~ To Rob")
-          if IsControlJustReleased(0,38) then
-            TriggerEvent('animation:rob')
-            exports['progressBars']:startUI(Config.Timer * 1000, "Grabbing Cash/Items")
-            TriggerServerEvent('RS7x:Payout')
-            Wait(Config.Timer * 1000)
-            finished = true
-          end
-          if finished == true then
-            SetPedAsNoLongerNeeded(gaurd)
-            SetPedAsNoLongerNeeded(guard2)
-            SetPedAsNoLongerNeeded(guard3)
-            pedSpawned = false
-            isRobbing = false
-            Timeout(true)
+        if not IsEntityDead(GetPlayerPed(-1)) then
+
+            if pedSpawned == true then
+
+                DrawMarker(27, text.x, text.y, text.z, 0, 0, 0, 0, 0, 0, 1.001, 1.0001, 0.5001, 255, 0, 0, 100, 0, 0, 0, 0)
+                DrawText3Ds(text.x, text.y, text.z, "~r~[E]~w~ To Rob")
+
+                if IsControlJustReleased(0,38) then
+                    TriggerEvent('animation:rob')
+                    exports['progressBars']:startUI(Config.Timer * 1000, "Grabbing Cash/Items")
+                    TriggerServerEvent('RS7x:Payout')
+                    Wait(Config.Timer * 1000)
+                    finished = true
+                end
+
+                if finished == true then
+                    SetPedAsNoLongerNeeded(gaurd)
+                    SetPedAsNoLongerNeeded(guard2)
+                    SetPedAsNoLongerNeeded(guard3)
+                    pedSpawned = false
+                    isRobbing = false
+                    Timeout(true)
+                    RemoveBlip(Blip)
+                    SetVehicleEngineHealth(vehicle, 0)
+                end
+            end
+        else
+            Citizen.Wait(Config.Timeout * 1000)
             RemoveBlip(Blip)
-            --return
-          end
+            finished = false
+            isRobbing = false
+            pedSpawned = false
         end
-      else
+    else
         Citizen.Wait(500)
-      end
+    end
   end
 end)
 
