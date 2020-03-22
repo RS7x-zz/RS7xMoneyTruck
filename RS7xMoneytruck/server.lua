@@ -35,13 +35,13 @@ AddEventHandler('RS7x:Itemcheck', function(amount)
             TriggerClientEvent('animation:hack', source)
         else
             isRobbing = false
-            --TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("Not Enough Police") })
-            TriggerClientEvent('esx:notification','~r~Not Enough Police', source, r)
+            TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("Not Enough Police") })
+            --TriggerClientEvent('esx:notification','~r~Not Enough Police', source, r)
         end
     else
         isRobbing = false
-        --TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("You dont have the right tools for this") })
-        TriggerClientEvent('esx:notification','~r~You dont have the right tools for this', source, r)
+        TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("You dont have the right tools for this") })
+        --TriggerClientEvent('esx:notification','~r~You dont have the right tools for this', source, r)
     end
 end)
 

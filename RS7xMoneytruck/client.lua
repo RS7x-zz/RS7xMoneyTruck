@@ -116,8 +116,8 @@ end)
 function Timeout(hasRobbed)
 
     if hasRobbed == true then
-        --exports['mythic_notify']:DoHudText('error', 'You have grabbed the loot and the truck appears to be empty go lay low for a while' )
-        TriggerEvent('esx:notification','~g~You have grabbed the loot and the truck appears to be empty go lay low for a while~w~', g)
+        exports['mythic_notify']:DoHudText('error', 'You have grabbed the loot and the truck appears to be empty go lay low for a while' )
+        --TriggerEvent('esx:notification','~g~You have grabbed the loot and the truck appears to be empty go lay low for a while~w~', g)
         Citizen.Wait(Config.Timeout * 1000)
         hasRobbed = false
     else
@@ -144,8 +144,8 @@ Citizen.CreateThread(function()
                     if engine ~= 0 then
                         TriggerServerEvent('RS7x:Itemcheck', 1)
                     else
-                        --exports['mythic_notify']:DoHudText('error', 'Vehicle is disabled or already been hit')
-                        TriggerEvent('esx:notification','~r~Vehicle is disabled or already been hit~w~', r)
+                        exports['mythic_notify']:DoHudText('error', 'Vehicle is disabled or already been hit')
+                        --TriggerEvent('esx:notification','~r~Vehicle is disabled or already been hit~w~', r)
                     end
                 end
             end
@@ -269,7 +269,8 @@ end)
 
 RegisterNetEvent('RS7x:NotifyPolice')
 AddEventHandler('RS7x:NotifyPolice', function(msg)
-    TriggerEvent('esx:notification', msg, r)
+    --TriggerEvent('esx:notification', msg, r)
+    exports['mythic_notify']:DoHudText('success', msg)
 end)
 
 function cb1(success, timeremaining)
@@ -277,14 +278,14 @@ function cb1(success, timeremaining)
     TriggerEvent('RS7x:getReward')
     Hacking = false
   else
-    --exports['mythic_notify']:DoHudText('error', 'You failed to hack you need to wait 30 seconds')
-    TriggerEvent('esx:notification', '~r~You failed to hack you need to wait 30 seconds~w~', r)
+    exports['mythic_notify']:DoHudText('error', 'You failed to hack you need to wait 30 seconds')
+    --TriggerEvent('esx:notification', '~r~You failed to hack you need to wait 30 seconds~w~', r)
     TriggerEvent('mhacking:hide')
     TriggerServerEvent('RS7x:NotifyPolice', street1, street2, pos)
     Hacking = false
     Wait(30 * 1000) -- add a time penalty if failed, so it gives police more time to arrive // feel free to remove
     isRobbing = false
-    --exports['mythic_notify']:DoHudText('error', 'you can now hit the truck again')
-    TriggerEvent('esx:notification', '~g~You can now hit the truck again~w~', g)
+    exports['mythic_notify']:DoHudText('success', 'you can now hit the truck again')
+    --TriggerEvent('esx:notification', '~g~You can now hit the truck again~w~', g)
   end
 end
