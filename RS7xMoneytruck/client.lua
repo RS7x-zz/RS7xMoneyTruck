@@ -116,11 +116,13 @@ function Timeout(hasRobbed)
 
     if hasRobbed == true then
         exports['mythic_notify']:DoHudText('error', 'You have grabbed the loot and the truck appears to be empty go lay low for a while' )
-        --TriggerEvent('esx:notification','~g~You have grabbed the loot and the truck appears to be empty go lay low for a while~w~', g)
+       -- TriggerEvent('esx:notification','~g~You have grabbed the loot and the truck appears to be empty go lay low for a while~w~', g)
         Citizen.Wait(Config.Timeout * 1000)
         hasRobbed = false
+        finished = false
     else
         hasRobbed = false
+        finished = false
     end
 end
 
@@ -140,11 +142,10 @@ Citizen.CreateThread(function()
         if GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing and not hasRobbed then
             if dstCheck < 5.0 then
                 if IsControlJustReleased(0, 38) then
-                    if engine ~= 0 then
+                    if engine > 0 then
                         TriggerServerEvent('RS7x:Itemcheck', 1)
                     else
                         exports['mythic_notify']:DoHudText('error', 'Vehicle is disabled or already been hit')
-                        --TriggerEvent('esx:notification','~r~Vehicle is disabled or already been hit~w~', r)
                     end
                 end
             end
@@ -173,6 +174,7 @@ Citizen.CreateThread(function()
                     Timeout(true)
                     RemoveBlip(Blip)
                     SetVehicleEngineHealth(vehicle, 0)
+                    finished = false
                 end
             end
         else
