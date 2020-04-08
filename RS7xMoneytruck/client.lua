@@ -126,6 +126,7 @@ function Timeout(hasRobbed)
     end
 end
 
+RobbedPlates = {}
 
 Citizen.CreateThread(function()
   while true do
@@ -136,16 +137,16 @@ Citizen.CreateThread(function()
     local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.001, 0, 70)
     local text = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -4.25, 0.0)
     local dstCheck = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, GetEntityCoords(vehicle), true)
-    local engine = GetVehicleEngineHealth(vehicle)
+    local Plate = GetVehicleNumberPlateText(vehicle)
 
     if DoesEntityExist(vehicle) then
         if GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing and not hasRobbed then
             if dstCheck < 5.0 then
                 if IsControlJustReleased(0, 38) then
-                    if engine > 0 then
+                    if not RobbedPlates[Plate] then
                         TriggerServerEvent('RS7x:Itemcheck', 1)
                     else
-                        exports['mythic_notify']:DoHudText('error', 'Vehicle is disabled or already been hit')
+                        exports['mythic_notify']:DoHudText('error', 'Vehicle already been hit')
                     end
                 end
             end
@@ -161,7 +162,7 @@ Citizen.CreateThread(function()
                     TriggerEvent('animation:rob')
                     exports['progressBars']:startUI(Config.Timer * 1000, "Grabbing Cash/Items")
                     TriggerServerEvent('RS7x:Payout')
-                    Wait(Config.Timer * 1000)
+                    Citizen.Wait(Config.Timer * 1000)
                     finished = true
                 end
 
@@ -173,8 +174,8 @@ Citizen.CreateThread(function()
                     isRobbing = false
                     Timeout(true)
                     RemoveBlip(Blip)
-                    SetVehicleEngineHealth(vehicle, 0)
                     finished = false
+                    RobbedPlates[Plate] = true
                 end
             end
         else
