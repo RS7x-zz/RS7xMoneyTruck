@@ -78,7 +78,7 @@ AddEventHandler('RS7x:Payout', function()
     Robbing = true
 
     while Robbing == true do
-        timer = timer + 5
+        timer = timer + 3.5
         Citizen.Wait(3500)  --// Delay between receiving Items/Cash might need to play around with this if you decide to change the default timer (Config.Timer)
         if math.random(1,100) <= 50 then
             xPlayer.addMoney(math.random(300,2500))
