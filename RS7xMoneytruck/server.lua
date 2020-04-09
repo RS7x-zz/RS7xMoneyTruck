@@ -95,7 +95,7 @@ AddEventHandler('RS7x:Payout', function()
         else
             xPlayer.addInventoryItem(RandomItem(), RandomNumber())
         end
-        if timer == Config.Timer then
+        if timer >= Config.Timer then
             Robbing = false
             break
         end

@@ -107,6 +107,7 @@ AddEventHandler('RS7x:getReward', function()
 
     if vehicle == GetHashKey('stockade') or GetEntityModel(vehicle) then
       createped()
+      pedSpawned = true
       TriggerServerEvent('RS7x:NotifyPolice', street1, street2, pos)
     end
     Citizen.Wait(0)
@@ -262,7 +263,6 @@ function createped()
   TaskCombatPed(guard3, GetPlayerPed(-1), 0,16)
   GiveWeaponToPed(guard3, GetHashKey("WEAPON_SMG"), 5000, true, true)
   SetPedRelationshipGroupHash( guard3, GetHashKey("HATES_PLAYER"))
-  pedSpawned = true
 end
 
 RegisterNetEvent('RS7x:startHacking')
