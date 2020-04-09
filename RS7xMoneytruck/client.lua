@@ -168,7 +168,7 @@ Citizen.CreateThread(function()
                 end
 
                 if finished then
-                    SetPedAsNoLongerNeeded(gaurd)
+                    SetPedAsNoLongerNeeded(guard)
                     SetPedAsNoLongerNeeded(guard2)
                     SetPedAsNoLongerNeeded(guard3)
                     pedSpawned = false
