@@ -61,6 +61,16 @@ AddEventHandler('RS7x:NotifyPolice', function(street1, street2, pos)
 	end
 end)
 
+RobbedPlates = {}
+
+RegisterNetEvent('RS7x:UpdatePlates')
+AddEventHandler('RS7x:UpdatePlates', function(UpdatedTable, Plate)
+    RobbedPlates = UpdatedTable
+    UpdatedTable[Plate] = true
+    TriggerClientEvent('RS7x:newTable',source , UpdatedTable)
+    print('Updated Plates To server')
+end)
+
 function RandomItem()
 	return Config.Items[math.random(#Config.Items)]
 end

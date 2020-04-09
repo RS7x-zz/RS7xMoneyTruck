@@ -146,7 +146,7 @@ Citizen.CreateThread(function()
                     if not RobbedPlates[Plate] then
                         TriggerServerEvent('RS7x:Itemcheck', 1)
                     else
-                        exports['mythic_notify']:DoHudText('error', 'Vehicle already been hit')
+                        exports['mythic_notify']:DoHudText('error', 'This truck appears to be empty (already hit)')
                     end
                 end
             end
@@ -166,7 +166,7 @@ Citizen.CreateThread(function()
                     finished = true
                 end
 
-                if finished == true then
+                if finished then
                     SetPedAsNoLongerNeeded(gaurd)
                     SetPedAsNoLongerNeeded(guard2)
                     SetPedAsNoLongerNeeded(guard3)
@@ -176,6 +176,7 @@ Citizen.CreateThread(function()
                     RemoveBlip(Blip)
                     finished = false
                     RobbedPlates[Plate] = true
+                    TriggerServerEvent('RS7x:UpdatePlates', RobbedPlates, Plate)
                 end
             end
         else
@@ -189,6 +190,11 @@ Citizen.CreateThread(function()
         Citizen.Wait(500)
     end
   end
+end)
+
+RegisterNetEvent('RS7x:newTable')
+AddEventHandler('RS7x:newTable', function(UpdatedTable)
+    RobbedPlates = UpdatedTable
 end)
 
 function createped()
