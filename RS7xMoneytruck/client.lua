@@ -128,7 +128,7 @@ function Timeout(hasRobbed)
 end
 
 RobbedPlates = {}
-
+RobbedPlates[Plate] = false
 Citizen.CreateThread(function()
   while true do
 

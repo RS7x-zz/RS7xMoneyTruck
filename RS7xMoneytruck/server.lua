@@ -62,12 +62,17 @@ AddEventHandler('RS7x:NotifyPolice', function(street1, street2, pos)
 end)
 
 RobbedPlates = {}
-
 RegisterNetEvent('RS7x:UpdatePlates')
 AddEventHandler('RS7x:UpdatePlates', function(UpdatedTable, Plate)
+    local xPlayers = ESX.GetPlayers()
     RobbedPlates = UpdatedTable
-    UpdatedTable[Plate] = true
-    TriggerClientEvent('RS7x:newTable',source , UpdatedTable)
+    for i=1, #xPlayers, 1 do
+        local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+        if xPlayer ~= nil then
+            UpdatedTable[Plate] = true
+            TriggerClientEvent('RS7x:newTable', xPlayers[i], UpdatedTable)
+        end
+    end
     print('Updated Plates To server')
 end)
 
