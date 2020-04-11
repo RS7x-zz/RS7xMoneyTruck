@@ -130,11 +130,11 @@ end
 RegisterNetEvent('RS7x:robbingtimer')
 AddEventHandler('RS7x:robbingtimer', function ()
 
-  if isRobbing3 == true then
+  if isRobbing == true then
     local timer = Config.Timer
 
       Citizen.CreateThread(function()
-        while timer > 0 and isRobbing3 do
+        while timer > 0 and isRobbing do
           Citizen.Wait (1000)
 
            if  timer > 0 then
