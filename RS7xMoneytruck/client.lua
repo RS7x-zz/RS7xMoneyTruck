@@ -127,6 +127,29 @@ function Timeout(hasRobbed)
     end
 end
 
+RegisterNetEvent('RS7x:robbingtimer')
+AddEventHandler('RS7x:robbingtimer', function ()
+
+  if isRobbing == true then
+    local timer = Config.Timer
+
+      Citizen.CreateThread(function()
+        while timer > 0 and isRobbing do
+          Citizen.Wait (1000)
+
+           if  timer > 0 then
+                timer = timer -1
+           end
+
+           if timer == 1 then
+              finished = true
+              break
+           end
+        end   
+      end)
+  end
+end)
+
 RobbedPlates = {}
 
 Citizen.CreateThread(function()
@@ -163,8 +186,7 @@ Citizen.CreateThread(function()
                     TriggerEvent('animation:rob')
                     exports['progressBars']:startUI(Config.Timer * 1000, "Grabbing Cash/Items")
                     TriggerServerEvent('RS7x:Payout')
-                    Citizen.Wait(Config.Timer * 1000)
-                    finished = true
+                    TriggerEvent('RS7x:robbingtimer')
                 end
 
                 if finished then
