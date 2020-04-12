@@ -7,7 +7,7 @@ local street1 = GetStreetNameFromHashKey(s1)
 local street2 = GetStreetNameFromHashKey(s2)
 local isRobbing = false
 local hasRobbed = false
-
+local looting = false
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -182,7 +182,8 @@ Citizen.CreateThread(function()
                 DrawMarker(27, text.x, text.y, text.z, 0, 0, 0, 0, 0, 0, 1.001, 1.0001, 0.5001, 255, 0, 0, 100, 0, 0, 0, 0)
                 DrawText3Ds(text.x, text.y, text.z, "~r~[E]~w~ To Rob")
 
-                if IsControlJustReleased(0,38) then
+                if IsControlJustReleased(0,38) and not looting then
+                    looting = true
                     TriggerEvent('animation:rob')
                     exports['progressBars']:startUI(Config.Timer * 1000, "Grabbing Cash/Items")
                     TriggerServerEvent('RS7x:Payout')
@@ -195,6 +196,7 @@ Citizen.CreateThread(function()
                     SetPedAsNoLongerNeeded(guard3)
                     pedSpawned = false
                     isRobbing = false
+                    looting = false
                     Timeout(true)
                     RemoveBlip(Blip)
                     finished = false
@@ -208,6 +210,7 @@ Citizen.CreateThread(function()
             finished = false
             isRobbing = false
             pedSpawned = false
+            looting = false
         end
     else
         Citizen.Wait(500)
