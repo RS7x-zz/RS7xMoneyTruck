@@ -158,13 +158,14 @@ Citizen.CreateThread(function()
     Citizen.Wait(0)
 
     local pos = GetEntityCoords(GetPlayerPed(-1))
-    local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.001, 0, 70)
+    local stockade = GetHashKey('stockade')
+    local vehicle = GetClosestVehicle(pos.x, pos.y, pos.z, 5.001, stockade, 70)
     local text = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -4.25, 0.0)
     local dstCheck = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, GetEntityCoords(vehicle), true)
     local Plate = GetVehicleNumberPlateText(vehicle)
 
     if DoesEntityExist(vehicle) then
-        if GetEntityModel(vehicle) == GetHashKey('stockade') and not isRobbing and not hasRobbed then
+        if not isRobbing and not hasRobbed then
             if dstCheck < 5.0 then
                 if IsControlJustReleased(0, 38) then
                     if not RobbedPlates[Plate] then
@@ -177,11 +178,11 @@ Citizen.CreateThread(function()
         end
         if not IsEntityDead(GetPlayerPed(-1)) then
 
-            if pedSpawned == true then
+            if pedSpawned == true and vehicle then
 
                 DrawMarker(27, text.x, text.y, text.z, 0, 0, 0, 0, 0, 0, 1.001, 1.0001, 0.5001, 255, 0, 0, 100, 0, 0, 0, 0)
                 DrawText3Ds(text.x, text.y, text.z, "~r~[E]~w~ To Rob")
-
+              if dstCheck < 5.0 then  
                 if IsControlJustReleased(0,38) and not looting then
                     looting = true
                     TriggerEvent('animation:rob')
@@ -189,7 +190,7 @@ Citizen.CreateThread(function()
                     TriggerServerEvent('RS7x:Payout')
                     TriggerEvent('RS7x:robbingtimer')
                 end
-
+              end    
                 if finished then
                     SetPedAsNoLongerNeeded(guard)
                     SetPedAsNoLongerNeeded(guard2)
