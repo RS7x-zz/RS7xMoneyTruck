@@ -203,9 +203,11 @@ Citizen.CreateThread(function()
                     finished = false
                     RobbedPlates[Plate] = true
                     TriggerServerEvent('RS7x:UpdatePlates', RobbedPlates, Plate)
+                    TriggerServerEvent('RS7x:moneytruck_false')
                 end
             end
         else
+            TriggerServerEvent('RS7x:moneytruck_false')
             Citizen.Wait(Config.Timeout * 1000)
             RemoveBlip(Blip)
             finished = false

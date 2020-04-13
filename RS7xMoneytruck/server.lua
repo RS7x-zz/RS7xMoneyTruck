@@ -1,4 +1,5 @@
 ESX = nil
+local moneytruck = false
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
@@ -26,10 +27,11 @@ AddEventHandler('RS7x:Itemcheck', function(amount)
     local isRobbing = true
 
     local item = xPlayer.getInventoryItem(Config.Item)
-
+if not moneytruck then
     if isRobbing and item.count > 0 and amount > 0 then
         CountCops()
         if CopsConnected >= Config.Copsneeded then
+            moneytruck = true
             --xPlayer.removeInventoryItem("Config.Item", 1)  // uncomment if you want to remove the item on start //
             TriggerClientEvent('RS7x:startHacking',source,true)
             TriggerClientEvent('animation:hack', source)
@@ -37,12 +39,15 @@ AddEventHandler('RS7x:Itemcheck', function(amount)
             isRobbing = false
             TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("Not Enough Police") })
             --TriggerClientEvent('esx:notification','~r~Not Enough Police', source, r)
-        end
+         end
     else
         isRobbing = false
         TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("You dont have the right tools for this") })
         --TriggerClientEvent('esx:notification','~r~You dont have the right tools for this', source, r)
     end
+else
+    TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("Someone is robbing moneytruck") })
+end    
 end)
 
 RegisterNetEvent('RS7x:NotifyPolice')
@@ -104,5 +109,12 @@ AddEventHandler('RS7x:Payout', function()
             Robbing = false
             break
         end
+    end
+end)
+
+RegisterNetEvent('RS7x:moneytruck_false')
+AddEventHandler('RS7x:moneytruck_false', function()
+    if moneytruck then
+        moneytruck = false
     end
 end)
