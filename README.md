@@ -19,4 +19,4 @@ To get in contact or want support on this resource leave a comment on
 
 https://forum.cfx.re/t/release-esx-money-truck-robberys/1057627/4        
 
-Or DM me on discord : RS7x#9905
+Or Join discord.gg/mEAAJAE
