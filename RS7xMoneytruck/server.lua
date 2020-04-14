@@ -36,12 +36,10 @@ AddEventHandler('RS7x:Itemcheck', function(amount)
         else
             isRobbing = false
             TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("Not Enough Police") })
-            --TriggerClientEvent('esx:notification','~r~Not Enough Police', source, r)
         end
     else
         isRobbing = false
         TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = ("You dont have the right tools for this") })
-        --TriggerClientEvent('esx:notification','~r~You dont have the right tools for this', source, r)
     end
 end)
 
@@ -55,13 +53,14 @@ AddEventHandler('RS7x:NotifyPolice', function(street1, street2, pos)
 			local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
             if xPlayer.job.name == 'police' then
                 TriggerClientEvent('RS7x:Blip', xPlayers[i], pos.x, pos.y, pos.z)
-                TriggerClientEvent('RS7x:NotifyPolice', xPlayers[i], '~r~Robbery In Progress : Security Truck | ' .. street1 .. " | " .. street2 .. '~w~ ')
+                TriggerClientEvent('RS7x:NotifyPolice', xPlayers[i], 'Robbery In Progress : Security Truck | ' .. street1 .. " | " .. street2 .. ' ')
 			end
 		end
 	end
 end)
 
 RobbedPlates = {}
+
 RegisterNetEvent('RS7x:UpdatePlates')
 AddEventHandler('RS7x:UpdatePlates', function(UpdatedTable, Plate)
     local xPlayers = ESX.GetPlayers()
