@@ -23,7 +23,7 @@ AddEventHandler('esx:setJob', function(job)
     ESX.PlayerData.job = job
 end)
 
-function removeblip(Blip)
+function RemoveBlips(Blip)
     if DoesBlipExist(Blip) then
         RemoveBlip(Blip)
     end
@@ -120,7 +120,7 @@ function Timeout(hasRobbed)
         if timer == 1 then
             hasRobbed = false
             finished = false
-            RemoveBlip(Blip)
+            RemoveBlips(Blip)
             finished = false
             break
         end
@@ -153,7 +153,6 @@ end)
 
 function PlateCheck(CurPlate, CurrentPlate)
     if CurrentPlate ~= CurPlate then
-        print('Diffrent Truck than original? (ignore if this pops during hacking stage)')
         return
     else
         looting = true
@@ -184,7 +183,6 @@ Citizen.CreateThread(function()
                 if IsControlJustReleased(0, 38) and not hasRobbed then
                     if not RobbedPlates[Plate] then
                         CurPlate = GetVehicleNumberPlateText(vehicle)
-                        PlateCheck(CurPlate, CurrentPlate)
                         TriggerServerEvent('RS7x:Itemcheck', 1)
                     else
                         exports['mythic_notify']:DoHudText('error', 'This truck appears to be empty (already hit)')
@@ -219,7 +217,7 @@ Citizen.CreateThread(function()
             end
         else
             Citizen.Wait(Config.Timeout * 1000)
-            RemoveBlip(Blip)
+            RemoveBlips(Blip)
             finished = false
             isRobbing = false
             pedSpawned = false
@@ -299,6 +297,7 @@ function createped()
     SetPedCombatRange(guard, 0)
     SetPedCombatMovement(guard, 3)
     TaskCombatPed(guard, GetPlayerPed(-1), 0,16)
+    TaskLeaveVehicle(guard, vehicle, 0)
     GiveWeaponToPed(guard, GetHashKey("WEAPON_SMG"), 5000, true, true)
     SetPedRelationshipGroupHash( guard, GetHashKey("HATES_PLAYER"))
 
@@ -314,6 +313,7 @@ function createped()
     SetPedCombatRange(guard2, 0)
     SetPedCombatMovement(guard2, 3)
     TaskCombatPed(guard2, GetPlayerPed(-1), 0,16)
+    TaskLeaveVehicle(guard2, vehicle, 0)
     GiveWeaponToPed(guard2, GetHashKey("WEAPON_SMG"), 5000, true, true)
     SetPedRelationshipGroupHash( guard2, GetHashKey("HATES_PLAYER"))
   
@@ -329,6 +329,7 @@ function createped()
     SetPedCombatRange(guard3, 0)
     SetPedCombatMovement(guard3, 3)
     TaskCombatPed(guard3, GetPlayerPed(-1), 0,16)
+    TaskLeaveVehicle(guard3, vehicle, 0)
     GiveWeaponToPed(guard3, GetHashKey("WEAPON_SMG"), 5000, true, true)
     SetPedRelationshipGroupHash( guard3, GetHashKey("HATES_PLAYER"))
 end
