@@ -23,12 +23,6 @@ AddEventHandler('esx:setJob', function(job)
     ESX.PlayerData.job = job
 end)
 
-function RemoveBlips(Blip)
-    if DoesBlipExist(Blip) then
-        RemoveBlip(Blip)
-    end
-end
-
 RegisterNetEvent('RS7x:Blip')
 AddEventHandler('RS7x:Blip', function(x,y,z)
   Blip = AddBlipForCoord(x,y,z)
@@ -42,6 +36,8 @@ AddEventHandler('RS7x:Blip', function(x,y,z)
     BeginTextCommandSetBlipName('STRING')
     AddTextComponentString('Robbery In Progress | Money Truck')
     EndTextCommandSetBlipName(Blip)
+    Wait(Config.BlipTimer * 1000)
+    RemoveBlip(Blip)
 end)
 
 function DrawText3Ds(x,y,z,text)
@@ -119,8 +115,6 @@ function Timeout(hasRobbed)
 
         if timer == 1 then
             hasRobbed = false
-            finished = false
-            RemoveBlips(Blip)
             finished = false
             break
         end
@@ -217,7 +211,6 @@ Citizen.CreateThread(function()
             end
         else
             Citizen.Wait(Config.Timeout * 1000)
-            RemoveBlips(Blip)
             finished = false
             isRobbing = false
             pedSpawned = false
