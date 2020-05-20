@@ -15,8 +15,4 @@
 
 # Contact
 
-To get in contact or want support on this resource leave a comment on 
-
-https://forum.cfx.re/t/release-esx-money-truck-robberys/1057627/4        
-
-Or DM me on discord : RS7x#9905
+To get in contact you can get me at on disord | RS7x#9905 (No longer providing support on the resource)
