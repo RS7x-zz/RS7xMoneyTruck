@@ -246,18 +246,19 @@ AddEventHandler('RS7x:NotifyPolice', function(msg)
 end)
 
 function cb1(success, timeremaining)
-  if success then
-    TriggerEvent('RS7x:getReward')
-    Hacking = false
-  else
-    exports['mythic_notify']:DoHudText('error', 'You failed to hack you need to wait 30 seconds')
-    TriggerEvent('mhacking:hide')
-    TriggerServerEvent('RS7x:NotifyPolice', street1, street2, pos)
-    Hacking = false
-    Wait(30 * 1000) -- add a time penalty if failed, so it gives police more time to arrive // feel free to remove
-    isRobbing = false
-    exports['mythic_notify']:DoHudText('success', 'you can now hit the truck again')
-  end
+    if success then
+        TriggerEvent('RS7x:getReward')
+        Hacking = false
+    else
+        exports['mythic_notify']:DoHudText('error', 'You failed to hack you need to wait 30 seconds')
+        TriggerEvent('mhacking:hide')
+        TriggerServerEvent('RS7x:NotifyPolice', street1, street2, pos)
+        Hacking = false
+        Wait(30 * 1000) -- add a time penalty if failed, so it gives police more time to arrive // feel free to remove
+        isRobbing = false
+        exports['mythic_notify']:DoHudText('success', 'you can now hit the truck again')
+        TriggerServerEvent('RS7x:moneytruck_false')
+    end
 end
 
 function createped()
