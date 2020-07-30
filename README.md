@@ -12,7 +12,3 @@
 
 1. Download and add "RS7xMoneytruck" to your resources folder
 2. add "start RS7xMoneytruck" to your server.cfg
-
-# Contact
-
-To get in contact you can get me at on disord | RS7x#9905 (No longer providing support on the resource)
